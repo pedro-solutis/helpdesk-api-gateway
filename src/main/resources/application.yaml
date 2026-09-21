@@ -1,0 +1,80 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service-route
+              uri: http://localhost:8081
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - /api/users
+                      - /api/users/**
+                      - /api/login
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+                
+            - id: ticket-service-route
+              uri: http://localhost:8082
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - /api/tickets
+                      - /api/tickets/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: notification-service-route
+              uri: http://localhost:8083
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - /api/notifications
+                      - /api/notifications/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: user-service-docs
+              uri: http://localhost:8081
+              predicates:
+                - name: Path
+                  args:
+                    patterns: /v3/api-docs/users
+              filters:
+                - RewritePath=/v3/api-docs/users, /v3/api-docs
+
+            - id: ticket-service-docs
+              uri: http://localhost:8082
+              predicates:
+                - name: Path
+                  args:
+                    patterns: /v3/api-docs/tickets
+              filters:
+                - RewritePath=/v3/api-docs/tickets, /v3/api-docs
+
+            - id: notification-service-docs
+              uri: http://localhost:8083
+              predicates:
+                - name: Path
+                  args:
+                    patterns: /v3/api-docs/notifications
+              filters:
+                - RewritePath=/v3/api-docs/notifications, /v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: User Service
+        url: /v3/api-docs/users
+      - name: Ticket Service
+        url: /v3/api-docs/tickets
+      - name: Notification Service
+        url: /v3/api-docs/notifications
