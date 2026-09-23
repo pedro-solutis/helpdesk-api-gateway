@@ -1,8 +1,10 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 spring:
   application:
     name: gateway
+  config:
+    import: optional:file:.env[.properties]
   cloud:
     gateway:
       server:
@@ -15,7 +17,7 @@ spring:
                 allowedHeaders: "*"
           routes:
             - id: user-service-route
-              uri: http://localhost:8081
+              uri: ${USER_SERVICE_URI:http://localhost:8081}
               predicates:
                 - name: Path
                   args:
@@ -27,7 +29,7 @@ spring:
                 - RewritePath=/api/(?<segment>.*), /$\{segment}
                 
             - id: ticket-service-route
-              uri: http://localhost:8082
+              uri: ${TICKET_SERVICE_URI:http://localhost:8082}
               predicates:
                 - name: Path
                   args:
@@ -38,7 +40,7 @@ spring:
                 - RewritePath=/api/(?<segment>.*), /$\{segment}
 
             - id: notification-service-route
-              uri: http://localhost:8083
+              uri: ${NOTIFICATION_SERVICE_URI:http://localhost:8083}
               predicates:
                 - name: Path
                   args:
@@ -49,7 +51,7 @@ spring:
                 - RewritePath=/api/(?<segment>.*), /$\{segment}
 
             - id: user-service-docs
-              uri: http://localhost:8081
+              uri: ${USER_SERVICE_URI:http://localhost:8081}
               predicates:
                 - name: Path
                   args:
@@ -58,7 +60,7 @@ spring:
                 - RewritePath=/v3/api-docs/users, /v3/api-docs
 
             - id: ticket-service-docs
-              uri: http://localhost:8082
+              uri: ${TICKET_SERVICE_URI:http://localhost:8082}
               predicates:
                 - name: Path
                   args:
@@ -67,7 +69,7 @@ spring:
                 - RewritePath=/v3/api-docs/tickets, /v3/api-docs
 
             - id: notification-service-docs
-              uri: http://localhost:8083
+              uri: ${NOTIFICATION_SERVICE_URI:http://localhost:8083}
               predicates:
                 - name: Path
                   args:
